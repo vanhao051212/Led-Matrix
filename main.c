@@ -10,13 +10,12 @@
 #include "HC595.h"
 
 /************** Change your String here ***************/
-char String_Data[] = {};
+char String_Data[] ="Haizz";
 // You must change size of string in HC595.c
 /******************************************************/
 
 
-
-uint8_t Payload[]={0b00011111  , 0b00100100};
+uint8_t Payload[]={};
 int main(void)
 {
     /* Replace with your application code */
@@ -24,11 +23,8 @@ int main(void)
 	Load_Data(String_Data, Payload);
     while (1) 
     {
-		Shift_Data(Payload);
-		_delay_ms(500);
-		HC595_Reset_All();
-		HC595_Output();
-		_delay_ms(500);
+		//Shift_Data_S(0xff,0b11111111);
+		Output_Data(Payload);
     }
 	
 }

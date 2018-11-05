@@ -9,6 +9,7 @@
 /* uses 8 pin to control
 /* 4 pin control row
 /* 4 pin control col
+/* when R=1 & C=1 then led on
 /**************************************/
 #include "MyLibrary.h"
 
@@ -33,7 +34,7 @@
 
 #define Num_Row	24
 
-#define Time_Delay	1000
+#define Time_Delay	100
 void HC595_Init(void);
 
 void Shift_Bit_C(uint8_t Bit);
@@ -48,8 +49,9 @@ void HC595_Reset_R();
 void HC595_Reset_All();
 
 void Shift_Data_C(uint8_t Data);			// dua data vao 74hc595
+void Shift_Data_R(uint8_t Data);
+void Output_Data(uint8_t Payload[Num_Row]);		// hien thi data ra led matrix
 
-void Shift_Data(uint8_t Payload[Num_Row]);		// hien thi data ra led matrix
 
 void Add( uint8_t Char[6] ,uint8_t Payload[], uint8_t Addr); //Add ki tu vao mang (phuc vu cho Load_Data() )
 void Load_Data(char Data [], uint8_t Payload[]); //chuyen data tu chuoi ki tu sang Bin

@@ -8,7 +8,7 @@
 #include "HC595.h"
 
 
-#define Size_Of_String	4		
+#define Size_Of_String	5		
 
 #define Num_Row_String	Size_Of_String*6
 
@@ -23,7 +23,7 @@ uint8_t e[6]={0b00001110  , 0b00010101  , 0b00010101  , 0b00010101  , 0b00001100
 uint8_t f[6]={0b00001000  , 0b00111111  , 0b01001000  , 0b01000000  , 0b00100000 , 0 };
 uint8_t g[6]={0b00001000  , 0b00010101  , 0b00010101  , 0b00010101  , 0b00011110 , 0 };
 uint8_t h[6]={0b01111111  , 0b00001000  , 0b00010000  , 0b00010000  , 0b00001111 , 0 };
-uint8_t i[6]={0  , 0b00001001  , 0b01011111  , 0b00000001  , 0 , 0 };
+uint8_t ii[6]={0  , 0b00001001  , 0b01011111  , 0b00000001  , 0 , 0 };
 uint8_t j[6]={0b00000010  , 0b00000001  , 0b00010001  , 0b01011110  , 0 , 0 };
 uint8_t k[6]={0  , 0b01111111  , 0b00000100  , 0b00001010  , 0b00010001 , 0 };
 uint8_t l[6]={0  , 0b01000001  , 0b01111111  , 0b00000001  , 0 , 0 };
@@ -110,28 +110,24 @@ void HC595_Init(void){
 }
 
 void Shift_Bit_C(uint8_t Bit){
-	if(Bit){
+	if(!Bit){
 		sbi ( PORT_595_C , DS_C );
-		sbi ( PORT_595_C , SHCP_C );
-		cbi ( PORT_595_C , SHCP_C );
 	} 
 	else {
 		cbi ( PORT_595_C , DS_C );
-		sbi ( PORT_595_C , SHCP_C );
-		cbi ( PORT_595_C , SHCP_C );
 	}
+	sbi ( PORT_595_C , SHCP_C );
+	cbi ( PORT_595_C , SHCP_C );
 }
 void Shift_Bit_R(uint8_t Bit){
 	if(Bit){
 		sbi ( PORT_595_R , DS_R );
-		sbi ( PORT_595_R , SHCP_R );
-		cbi ( PORT_595_R , SHCP_R );
 	} 
 	else {
 		cbi ( PORT_595_R , DS_R );
-		sbi ( PORT_595_R , SHCP_R );
-		cbi ( PORT_595_R , SHCP_R );
 	}
+	sbi ( PORT_595_R , SHCP_R );
+	cbi ( PORT_595_R , SHCP_R );
 }
 
 
@@ -142,11 +138,11 @@ void HC595_Output(){
 
 void HC595_Reset_C(){
 	cbi(PORT_595_C,RST_C);
-	sbi(DDR_595_C,RST_C);
+	sbi(PORT_595_C,RST_C);
 }
 void HC595_Reset_R(){
 	cbi(PORT_595_R,RST_R);
-	sbi(DDR_595_C,RST_R);
+	sbi(PORT_595_R,RST_R);
 }
 void HC595_Reset_All(){
 	HC595_Reset_C();
@@ -163,45 +159,39 @@ void Shift_Data_C(uint8_t Data ){
 		Shift_Bit_C( Check_Bit ( Data,i ) );
 	}
 }
-//void Shift_Data(uint8_t Payload[Num_Row]){
-	//HC595_Reset_All();
-	//uint8_t Stt= 1;
-	//for(int i=0; i< Num_Row; i++){
-		//if(Stt == 1){
-			//Shift_Bit_R(1);
-			//Shift_Data_C(Payload[i]);
-			//HC595_Output();
-			//_delay_us(Time_Delay);
-			//Stt= 0;
-		//}
-		//else{
-			//Shift_Bit_R(0);
-			//Shift_Data_C(Payload[i]);
-			//HC595_Output();
-			//_delay_us(Time_Delay);
-		//}
-	//}
-//}
-
-void Shift_Data(uint8_t Payload[]){
+void Shift_Data_R(uint8_t Data){
+	for(int i=0; i<8; i++){
+		Shift_Bit_R( Check_Bit ( Data,i ) );
+	}
+}
+void Output_Data(uint8_t Payload[]){
 	HC595_Reset_All();
 	uint8_t Stt= 1;
-	for(int i=0; i< 2; i++){
+	for(int i=0; i< Num_Row; i++){
 		if(Stt == 1){
-			//Shift_Bit_R(1);
+			Shift_Bit_R(1);
 			Shift_Data_C(Payload[i]);
 			HC595_Output();
 			_delay_us(Time_Delay);
 			Stt= 0;
 		}
 		else{
-			//Shift_Bit_R(0);
+			Shift_Bit_R(0);
 			Shift_Data_C(Payload[i]);
 			HC595_Output();
 			_delay_us(Time_Delay);
 		}
 	}
 }
+
+//void Shift_Data(uint8_t Payload[]){
+	//for(int i=0; i<2;i++){
+		//Shift_Data_C(Payload[i]);
+		//HC595_Output();
+		//_delay_us(Time_Delay);
+	//}
+//}
+
 void Add( uint8_t Char[6] ,uint8_t Payload[], uint8_t Addr){
 	for (int i=0; i<6;i++){
 		Payload[Addr+i]= Char[i];
@@ -234,6 +224,36 @@ void Load_Data(char Data [], uint8_t Payload[]){
 			case 'U': Add(U,Payload,6*i); break;
 			case 'V': Add(V,Payload,6*i); break;
 			case 'W': Add(W,Payload,6*i); break;
+			case 'X': Add(X,Payload,6*i); break;
+			case 'Y': Add(Y,Payload,6*i); break;
+			case 'Z': Add(Z,Payload,6*i); break;
+			
+			case 'a': Add(a,Payload,6*i); break;
+			case 'b': Add(b,Payload,6*i); break;
+			case 'c': Add(c,Payload,6*i); break;
+			case 'd': Add(d,Payload,6*i); break;
+			case 'e': Add(e,Payload,6*i); break;
+			case 'f': Add(f,Payload,6*i); break;
+			case 'g': Add(g,Payload,6*i); break;
+			case 'h': Add(h,Payload,6*i); break;
+			case 'i': Add(ii,Payload,6*i); break;
+			case 'j': Add(j,Payload,6*i); break;
+			case 'k': Add(k,Payload,6*i); break;
+			case 'l': Add(l,Payload,6*i); break;
+			case 'm': Add(m,Payload,6*i); break;
+			case 'n': Add(n,Payload,6*i); break;
+			case 'o': Add(o,Payload,6*i); break;
+			case 'p': Add(p,Payload,6*i); break;
+			case 'q': Add(q,Payload,6*i); break;
+			case 'r': Add(r,Payload,6*i); break;
+			case 's': Add(s,Payload,6*i); break;
+			case 't': Add(t,Payload,6*i); break;
+			case 'u': Add(u,Payload,6*i); break;
+			case 'v': Add(v,Payload,6*i); break;
+			case 'w': Add(w,Payload,6*i); break;
+			case 'x': Add(x,Payload,6*i); break;
+			case 'y': Add(y,Payload,6*i); break;
+			case 'z': Add(z,Payload,6*i); break;
 
 			/*             */
 			default: break;
