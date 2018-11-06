@@ -32,9 +32,14 @@
 
 #define STCP		2          // output data together  using port 595_R
 
-#define Num_Row	24
+#define Num_Row	32
 
-#define Time_Delay	100
+#define Time_Delay	300
+/* change size of string here */
+#define Size_Of_String	15
+/*******************************/
+#define Num_Row_String	Size_Of_String*6
+
 void HC595_Init(void);
 
 void Shift_Bit_C(uint8_t Bit);
@@ -56,5 +61,7 @@ void Output_Data(uint8_t Payload[Num_Row]);		// hien thi data ra led matrix
 void Add( uint8_t Char[6] ,uint8_t Payload[], uint8_t Addr); //Add ki tu vao mang (phuc vu cho Load_Data() )
 void Load_Data(char Data [], uint8_t Payload[]); //chuyen data tu chuoi ki tu sang Bin
 
+void Dich_Data(uint8_t payload[], uint8_t data[], uint8_t addr);  // dich mang chu sang ben trai
 
+void Clear_Temp(uint8_t Temp[]);
 #endif /* HC595_H_ */

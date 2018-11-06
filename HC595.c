@@ -7,12 +7,6 @@
 
 #include "HC595.h"
 
-
-#define Size_Of_String	5		
-
-#define Num_Row_String	Size_Of_String*6
-
-
 /*****************************************/
 
 uint8_t a[6]={0b00000010  , 0b00010101  , 0b00010101  , 0b00010101  , 0b00001111 , 0 };
@@ -29,7 +23,7 @@ uint8_t k[6]={0  , 0b01111111  , 0b00000100  , 0b00001010  , 0b00010001 , 0 };
 uint8_t l[6]={0  , 0b01000001  , 0b01111111  , 0b00000001  , 0 , 0 };
 uint8_t m[6]={0b00011111  , 0b00010000  , 0b00001111  , 0b00010000  , 0b00001111 , 0 };
 uint8_t n[6]={0b00011111  , 0b00001000  , 0b00010000  , 0b00010000  , 0b00001111 , 0 };
-uint8_t o[6]={0b00001110  , 0b00001001  , 0b00001001  , 0b00001001  , 0b00001110 , 0 };
+uint8_t o[6]={0b00001110  , 0b00010001  , 0b00010001  , 0b00010001  , 0b00001110 , 0 };
 uint8_t p[6]={0b00011111  , 0b00010100  , 0b00010100  , 0b00010100  , 0b00001000 , 0 };
 uint8_t q[6]={0b00001000  , 0b00010100  , 0b00010100  , 0b00010100  , 0b00011111 , 0 };
 uint8_t r[6]={0  , 0b00011111  , 0b00001000  , 0b00010000  , 0b00010000 , 0 };
@@ -42,7 +36,6 @@ uint8_t x[6]={0b00010001  , 0b00010010  , 0b00001110  , 0b00001001  , 0b00010001
 uint8_t y[6]={0b00010001  , 0b00001001  , 0b00000110  , 0b00000100  , 0b00011000 , 0 };
 uint8_t z[6]={0b00010001  , 0b00010011  , 0b00010101  , 0b00011001  , 0b00010001 , 0 };
 
-uint8_t Rong[6]={0 , 0 , 0 , 0 , 0, 0};
 
 uint8_t Mot[6]={0b00010001  , 0b00100001  , 0b01111111  , 0b00000001  , 0b00000001 , 0 };
 uint8_t Hai[6]={0b00100001  , 0b01000011  , 0b01000101  , 0b01001001  , 0b00110001 , 0 };
@@ -54,11 +47,6 @@ uint8_t Bay[6]={0b01000000  , 0b01000111  , 0b01001000  , 0b01010000  , 0b011000
 uint8_t Tam[6]={0b00110110  , 0b01001001  , 0b01001001  , 0b01001001  , 0b00110110 , 0 };
 uint8_t Chin[6]={0b00110010  , 0b01001001  , 0b01001001  , 0b01001001  , 0b00111110 , 0 };
 uint8_t Khong[6]={0b00111110  , 0b01000101  , 0b01001001  , 0b01010001  , 0b00111110 , 0 };
-
-
-uint8_t HaiCham[6]={0  , 0  , 0b00010100  , 0  , 0 , 0 };
-uint8_t Xuyet[6] ={2,4,8,16,32,0};
-uint8_t GachNgang[6] ={8,8,8,8,8,0};
 
 uint8_t A[6]={0b00011111  , 0b00100100  , 0b01000100  , 0b01000100  , 0b01111111 , 0 };
 uint8_t B[6]={0b01111111  , 0b01001001  , 0b01001001  , 0b01001001  , 0b00110110 , 0 };
@@ -86,6 +74,17 @@ uint8_t W[6]={0b01111110  , 0b00000001  , 0b00000110  , 0b00000001  , 0b01111110
 uint8_t X[6]={0b01100011  , 0b00010100  , 0b00001000  , 0b00010100  , 0b01100011 , 0 };
 uint8_t Y[6]={0b01110000  , 0b00001000  , 0b00001111  , 0b00001000  , 0b01110000 , 0 };
 uint8_t Z[6]={0b01000011  , 0b01000101  , 0b01001001  , 0b01010001  , 0b01000011 , 0 };
+
+/* special char */
+uint8_t HaiCham[6]={0  , 0  , 0b00010100  , 0  , 0 , 0 };
+uint8_t Xuyet[6] ={2,4,8,16,32,0};
+uint8_t GachNgang[6] ={8,8,8,8,8,0};
+uint8_t ChamThang[6] ={0,0,0b00111101,0,0};
+uint8_t Rong[6]={0 , 0 , 0 , 0 , 0, 0};	
+	
+	
+	
+	
 
 
 void HC595_Init(void){
@@ -171,17 +170,16 @@ void Output_Data(uint8_t Payload[]){
 		if(Stt == 1){
 			Shift_Bit_R(1);
 			Shift_Data_C(Payload[i]);
-			HC595_Output();
-			_delay_us(Time_Delay);
 			Stt= 0;
 		}
 		else{
 			Shift_Bit_R(0);
 			Shift_Data_C(Payload[i]);
-			HC595_Output();
-			_delay_us(Time_Delay);
 		}
+		HC595_Output();
+		_delay_us(Time_Delay);
 	}
+	
 }
 
 //void Shift_Data(uint8_t Payload[]){
@@ -198,6 +196,23 @@ void Add( uint8_t Char[6] ,uint8_t Payload[], uint8_t Addr){
 	}
 }
 
+void Dich_Data(uint8_t payload[Num_Row], uint8_t data[] , uint8_t addr){
+	for(int ab=0; ab<Num_Row; ab++){
+		uint8_t temp; 
+		temp= ab + addr;
+	
+		if(temp >= Num_Row_String) {
+			temp = temp - Num_Row_String;
+		}
+		payload[ab]= data[temp];
+	}
+}
+
+void Clear_Temp(uint8_t Temp[]){
+	for(int i=0; i<Num_Row; i++){
+		Temp[i]=0;
+	}
+}
 void Load_Data(char Data [], uint8_t Payload[]){
 	for(int i=0; i<Size_Of_String; i++){
 		switch (Data[i]){
@@ -254,7 +269,10 @@ void Load_Data(char Data [], uint8_t Payload[]){
 			case 'x': Add(x,Payload,6*i); break;
 			case 'y': Add(y,Payload,6*i); break;
 			case 'z': Add(z,Payload,6*i); break;
-
+			
+			/* chua co ki tu dac biet */
+			case '!': Add(ChamThang,Payload,6*i); break;
+			case ' ': Add(Rong,Payload,6*i); break;
 			/*             */
 			default: break;
 		}
